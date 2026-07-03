@@ -3,7 +3,7 @@
 set -euo pipefail
 
 xtra_flags=""
-
+cd /godot-project/src-godot/
 
 setup() {
 
