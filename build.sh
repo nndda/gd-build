@@ -11,6 +11,12 @@ setup() {
 
   ls -l "$GITHUB_WORKSPACE"
 
+  echo "::group::Installing AccessKit"
+
+  python ./misc/scripts/install_accesskit.py
+
+  echo "::endgroup::"
+
   if [[ "$EXPORT_TARGET" == "android" ]]; then
 
     echo "::group::Installing Swappy Android"
