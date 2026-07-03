@@ -1,0 +1,46 @@
+name: Build Docker image
+
+on:
+  push:
+    tags:
+      - '*-stable'
+    # paths:
+    #   - Dockerfile
+    #   - '.github/actions/build-docker-image/action.yml'
+    #   - '.github/workflows/build-docker-image.yml'
+  workflow_dispatch:
+    inputs:
+      godot_tag:
+        default: ''
+        type: string
+        required: false
+
+jobs:
+  lint: # ---------------------------------------------------------------------
+    name: Lint Dockerfile
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7.0.0
+      - uses: hadolint/hadolint-action@v3.3.0
+        with:
+          dockerfile: Dockerfile
+          ignore: DL3008
+
+  build-push: # ---------------------------------------------------------------
+    name: Build & push Docker image
+
+    runs-on: ubuntu-latest
+
+    needs:
+      - lint
+
+    steps:
+      - uses: actions/checkout@v7.0.0
+      - uses: ./.github/actions/build-docker-image
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          token: ${{ secrets.DOCKERHUB_TOKEN }}
+          # GODOT_VER: ${{ github.ref_name }}
+          GODOT_VER: ${{ case( inputs.godot_tag == '', github.ref_name, inputs.godot_tag ) }}
