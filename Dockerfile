@@ -47,23 +47,18 @@ RUN \
     --depth=1 \
     --branch="$GODOT_VER" \
     https://github.com/godotengine/godot.git /godot-project/src-godot/ \
-  && cd /godot-project/src-godot/ \
-  && python -m venv . \
-  && source bin/activate \
-  && pip install --force-reinstall SCons==4.10.1
-
 
 # Godot Binary
 
-RUN \
-  curl \
-    --fail --location \
-      https://github.com/godotengine/godot/releases/download/${GODOT_VER}/Godot_v${GODOT_VER}_linux.x86_64.zip \
-      --output godot.zip \
-  && unzip godot.zip \
-    -d "/usr/bin/" \
-  && rm godot.zip \
-  && mv /usr/bin/Godot_v${GODOT_VER}_linux.x86_64 /usr/bin/godot
+# RUN \
+#   curl \
+#     --fail --location \
+#       https://github.com/godotengine/godot/releases/download/${GODOT_VER}/Godot_v${GODOT_VER}_linux.x86_64.zip \
+#       --output godot.zip \
+#   && unzip godot.zip \
+#     -d "/usr/bin/" \
+#   && rm godot.zip \
+#   && mv /usr/bin/Godot_v${GODOT_VER}_linux.x86_64 /usr/bin/godot
 
 # JDK
 
@@ -106,3 +101,9 @@ ENV ANDROID_HOME="/usr/share/sdk/android/"
 ENV ANDROID_SDK_ROOT=
 
 ENTRYPOINT [ "/build.sh" ]
+
+WORKDIR /godot-project/src-godot
+
+RUN python -m venv . \
+  && source bin/activate \
+  && pip install --force-reinstall --no-cache-dir SCons==4.10.1
