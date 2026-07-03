@@ -22,7 +22,7 @@ inputs:
 
 runs:
   using: docker
-  image: docker://image/nndda/gd-build:4.7-stable
+  image: docker://nndda/gd-build:4.7-stable
   env:
     EXPORT_TARGET: ${{ inputs.target }}
     EXPORT_ARCH: ${{ inputs.arch }}
