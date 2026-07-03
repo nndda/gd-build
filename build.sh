@@ -5,9 +5,7 @@ set -euo pipefail
 xtra_flags=""
 cd /godot-project/src-godot/
 
-python -m venv .
 source bin/activate
-pip install --force-reinstall SCons==4.10.1
 
 setup() {
 
@@ -82,10 +80,10 @@ build() {
 
     xtra_flags+=" use_mingw=yes"
 
-    sudo update-alternatives --set x86_64-w64-mingw32-gcc \
+    update-alternatives --set x86_64-w64-mingw32-gcc \
       /usr/bin/x86_64-w64-mingw32-gcc-posix
 
-    sudo update-alternatives --set x86_64-w64-mingw32-g++ \
+    update-alternatives --set x86_64-w64-mingw32-g++ \
       /usr/bin/x86_64-w64-mingw32-g++-posix
 
   fi
@@ -116,7 +114,7 @@ build() {
 
   fi
 
-  7zz a -t7z -mx=9 -m0=lzma2 -mfb=273 -md=256m -mmt=4 -ms=on "$GITHUB_WORKSPACE/$EXPORT_TARGET-$EXPORT_ARCH.7z" "./bin/*" -xr!obj -xr!build_deps
+  7z a -t7z -mx=9 -m0=lzma2 -mfb=273 -md=256m -mmt=4 -ms=on "$GITHUB_WORKSPACE/$EXPORT_TARGET-$EXPORT_ARCH.7z" "./bin/*" -xr!obj -xr!build_deps
 
 }
 

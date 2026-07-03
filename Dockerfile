@@ -46,7 +46,12 @@ RUN \
     --no-progress \
     --depth=1 \
     --branch="$GODOT_VER" \
-    https://github.com/godotengine/godot.git /godot-project/src-godot/
+    https://github.com/godotengine/godot.git /godot-project/src-godot/ \
+  && cd /godot-project/src-godot/ \
+  && python -m venv . \
+  && source bin/activate \
+  && pip install --force-reinstall SCons==4.10.1
+
 
 # Godot Binary
 
