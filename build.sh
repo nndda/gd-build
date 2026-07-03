@@ -5,6 +5,10 @@ set -euo pipefail
 xtra_flags=""
 cd /godot-project/src-godot/
 
+python -m venv .
+source bin/activate
+pip install --force-reinstall SCons==4.10.1
+
 setup() {
 
   ls -l "$GITHUB_WORKSPACE"
