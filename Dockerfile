@@ -1,0 +1,103 @@
+FROM ubuntu:22.04
+
+ARG GODOT_VER
+
+WORKDIR /godot-project
+
+SHELL [ "/bin/bash", "-c", "-o", "pipefail" ]
+
+COPY build.sh /build.sh
+
+RUN apt-get update && \
+    apt-get install \
+      --assume-yes \
+      --no-install-recommends \
+        ca-certificates \
+        git \
+        build-essential \
+        scons \
+        pkg-config \
+        libx11-dev \
+        libxcursor-dev \
+        libxinerama-dev \
+        libgl1-mesa-dev \
+        libglu1-mesa-dev \
+        libasound2-dev \
+        libpulse-dev \
+        libudev-dev \
+        libxi-dev \
+        libxrandr-dev \
+        libwayland-dev \
+        mingw-w64 \
+        python3 \
+        python3-pip \
+        python3-venv \
+        unzip \
+        curl \
+        p7zip-full \
+    && rm --recursive --force /var/lib/apt/lists/* \
+    && ln --symbolic /usr/bin/python3 /usr/bin/python
+
+# Godot source
+
+RUN \
+  git clone \
+    --quiet \
+    --no-progress \
+    --depth=1 \
+    --branch="$GODOT_VER" \
+    https://github.com/godotengine/godot.git /godot-project/src-godot/
+
+# Godot Binary
+
+RUN \
+  curl \
+    --fail --location \
+      https://github.com/godotengine/godot/releases/download/${GODOT_VER}/Godot_v${GODOT_VER}_linux.x86_64.zip \
+      --output godot.zip \
+  && unzip godot.zip \
+    -d "/usr/bin/" \
+  && rm godot.zip \
+  && mv /usr/bin/Godot_v${GODOT_VER}_linux.x86_64 /usr/bin/godot
+
+# JDK
+
+RUN \
+  mkdir --parents /usr/share/sdk/java \
+  && curl \
+    --fail --location \
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.18%2B8/OpenJDK17U-jdk_x64_linux_hotspot_17.0.18_8.tar.gz \
+  | tar \
+    --extract \
+    --gzip \
+    --directory=/usr/share/sdk/java
+
+ENV JAVA_HOME="/usr/share/sdk/java/jdk-17.0.18+8"
+
+# Android SDK
+
+RUN \
+  mkdir --parents /usr/share/sdk/commandlinetools \
+  && curl \
+    --fail --location \
+      https://dl.google.com/android/repository/commandlinetools-linux-14742923_latest.zip \
+    --output commandlinetools.zip \
+  && unzip commandlinetools.zip \
+    -d "/usr/share/sdk/commandlinetools/" \
+  && rm commandlinetools.zip \
+  && yes | \
+    /usr/share/sdk/commandlinetools/cmdline-tools/bin/sdkmanager \
+    --sdk_root=/usr/share/sdk/android/ \
+    --install \
+      "platform-tools" \
+      "build-tools;35.0.1" \
+      "platforms;android-35" \
+      "cmdline-tools;latest" \
+      "cmake;3.10.2.4988404" \
+      "ndk;28.1.13356709"; \
+  rm --recursive --force /usr/share/sdk/commandlinetools/
+
+ENV ANDROID_HOME="/usr/share/sdk/android/"
+ENV ANDROID_SDK_ROOT=
+
+ENTRYPOINT [ "/build.sh" ]
