@@ -46,7 +46,7 @@ RUN \
     --no-progress \
     --depth=1 \
     --branch="$GODOT_VER" \
-    https://github.com/godotengine/godot.git /godot-project/src-godot/ \
+    https://github.com/godotengine/godot.git /godot-project/src-godot/
 
 # Godot Binary
 
