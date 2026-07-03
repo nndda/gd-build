@@ -2,11 +2,12 @@
 
 set -euo pipefail
 
+xtra_flags=""
 
 
 setup() {
 
-  xtra_flags=""
+  ls -l "$GITHUB_WORKSPACE"
 
   if [[ "$EXPORT_TARGET" == "android" ]]; then
 
@@ -61,7 +62,7 @@ setup() {
 
   # echo "::endgroup::"
 
-  echo "EXTRA_FLAGS=$xtra_flags" >> "$GITHUB_ENV"
+  # echo "EXTRA_FLAGS=$xtra_flags" >> "$GITHUB_ENV"
 
 }
 
@@ -69,7 +70,7 @@ setup() {
 
 build() {
 
-  xtra_flags="$EXTRA_FLAGS"
+  # xtra_flags="$EXTRA_FLAGS"
 
   if [[ "$EXPORT_TARGET" == "windows" ]]; then
 
