@@ -1,0 +1,28 @@
+name: Build Godot project export templates
+description: Build the Godot project export templates
+
+inputs:
+
+  target:
+    description: Target platform
+    required: true
+
+  arch:
+    description: Target platform architecture
+    required: true
+
+  # type:
+  #   description: Build type
+  #   required: false
+  #   default: release
+
+runs:
+  using: docker
+  image: nndda/gd-build:${{ github.action_ref }}
+  env:
+    EXPORT_TARGET: ${{ inputs.target }}
+    EXPORT_ARCH: ${{ inputs.arch }}
+
+branding:
+  icon: package
+  color: gray-dark
