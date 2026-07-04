@@ -3,19 +3,22 @@
 set -euo pipefail
 
 xtra_flags=""
-cd /godot-project/src-godot/
 
+cd /godot-project/src-godot/pyenv
 source bin/activate
+cd ..
 
 setup() {
 
   ls -l "$GITHUB_WORKSPACE"
+
 
   echo "::group::Installing AccessKit"
 
   python ./misc/scripts/install_accesskit.py
 
   echo "::endgroup::"
+
 
   if [[ "$EXPORT_TARGET" == "android" ]]; then
 
@@ -34,6 +37,24 @@ setup() {
     python ./misc/scripts/install_d3d12_sdk_windows.py
 
     xtra_flags+=" d3d12=yes"
+
+    echo "::endgroup::"
+
+
+    echo "::group::Installing WinRT/OneCore API"
+
+    python ./misc/scripts/install_winrt.py
+
+    xtra_flags+=" winrt=yes"
+
+    echo "::endgroup::"
+
+
+    echo "::group::Installing ANGLE rendering driver"
+
+    python ./misc/scripts/install_angle.py
+
+    xtra_flags+=" angle=yes"
 
     echo "::endgroup::"
 

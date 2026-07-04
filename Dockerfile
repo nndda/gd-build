@@ -102,7 +102,7 @@ ENV ANDROID_SDK_ROOT=
 
 ENTRYPOINT [ "/build.sh" ]
 
-WORKDIR /godot-project/src-godot
+WORKDIR /godot-project/src-godot/pyenv
 
 RUN python -m venv . \
   && source bin/activate \
